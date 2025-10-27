@@ -102,6 +102,7 @@ function loadDashboard() {
     renderKPIs();
     renderCharts();
     renderAccordions();
+    renderAIQLBreakdown();
 }
 
 function renderKPIs() {
@@ -266,6 +267,18 @@ function renderAccordions() {
         const currentValue = data.total[0];
         const summary = category === 'Spend' ? `$${formatNumber(currentValue)}` : formatNumber(currentValue);
         
+        // Categories with channel breakdown
+        const hasChannels = data.channels !== undefined;
+        
+        // Calculate Cost Per for AIQLs and Hand Raisers
+        let costPerMetric = '';
+        if (category === 'AIQLs' || category === 'Hand Raisers') {
+            const spend = weeklyData.categories['Spend'].total;
+            const costPer = data.total.map((val, i) => val > 0 ? (spend[i] / val) : 0);
+            data.costPer = costPer;
+            costPerMetric = `$${formatNumber(costPer[0])} CPL`;
+        }
+        
         return `
             <div class="accordion-item ${index === 0 ? 'active' : ''}" id="accordion-${index}">
                 <div class="accordion-header" onclick="toggleAccordion(${index})">
@@ -275,9 +288,11 @@ function renderAccordions() {
                     </div>
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <span class="accordion-summary">${summary}</span>
-                        <span class="accordion-icon">▼</span>
+                        ${costPerMetric ? `<span class="accordion-summary" style="color: var(--accent-amber);">${costPerMetric}</span>` : ''}
+                        ${hasChannels ? '<span class="accordion-icon">▼</span>' : ''}
                     </div>
                 </div>
+                ${hasChannels ? `
                 <div class="accordion-content">
                     <table class="accordion-table">
                         <thead>
@@ -298,6 +313,34 @@ function renderAccordions() {
                         </tbody>
                     </table>
                 </div>
+                ` : `
+                <div class="accordion-content">
+                    <table class="accordion-table">
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                ${weeklyData.weeks.map(week => `<th class="numeric">${week}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>${category}</td>
+                                ${data.total.map(value => `
+                                    <td class="numeric">${value !== null ? formatNumber(value) : '—'}</td>
+                                `).join('')}
+                            </tr>
+                            ${data.costPer ? `
+                            <tr>
+                                <td style="color: var(--accent-amber);">Cost Per ${category === 'AIQLs' ? 'AIQL' : 'Hand Raiser'}</td>
+                                ${data.costPer.map(value => `
+                                    <td class="numeric" style="color: var(--accent-amber);">${value > 0 ? '$' + formatNumber(value) : '—'}</td>
+                                `).join('')}
+                            </tr>
+                            ` : ''}
+                        </tbody>
+                    </table>
+                </div>
+                `}
             </div>
         `;
     }).join('');

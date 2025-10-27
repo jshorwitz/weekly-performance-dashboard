@@ -57,6 +57,76 @@
             <div class="accordion-container" id="accordionContainer">
                 <!-- Will be populated by JavaScript -->
             </div>
+
+            <!-- AIQL Breakdown -->
+            <div class="aiql-breakdown-section">
+                <div class="section-header">
+                    <h2>🎯 AIQL Account Intelligence</h2>
+                    <div class="section-subtitle">Qualification & Segmentation Breakdown</div>
+                </div>
+
+                <div class="breakdown-grid">
+                    <!-- Email Type Distribution -->
+                    <div class="breakdown-card">
+                        <div class="breakdown-title">Email Distribution</div>
+                        <canvas id="emailTypeChart"></canvas>
+                        <div class="breakdown-stats">
+                            <div class="stat-item">
+                                <span class="stat-value">4%</span>
+                                <span class="stat-label">Attached to Accounts</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">96%</span>
+                                <span class="stat-label">Free Emails</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Segmentation -->
+                    <div class="breakdown-card">
+                        <div class="breakdown-title">Account Segmentation</div>
+                        <canvas id="segmentationChart"></canvas>
+                        <div class="breakdown-stats-grid">
+                            <div class="stat-item"><span class="stat-label">Strategic:</span> <span class="stat-value">14</span></div>
+                            <div class="stat-item"><span class="stat-label">Enterprise:</span> <span class="stat-value">2</span></div>
+                            <div class="stat-item"><span class="stat-label">SMB:</span> <span class="stat-value">2</span></div>
+                            <div class="stat-item"><span class="stat-label">Self-Service:</span> <span class="stat-value">1</span></div>
+                            <div class="stat-item"><span class="stat-label">Not Known:</span> <span class="stat-value">53</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Opportunity Status -->
+                    <div class="breakdown-card wide">
+                        <div class="breakdown-title">Opportunity Pipeline Status</div>
+                        <div class="opportunity-bars">
+                            <div class="opp-bar-row">
+                                <div class="opp-label">Net New Accounts</div>
+                                <div class="opp-bar-container">
+                                    <div class="opp-bar" style="width: 70.67%; background: var(--sentinel-green);">
+                                        <span class="opp-value">53 (enrichment)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="opp-bar-row">
+                                <div class="opp-label">No Opportunities</div>
+                                <div class="opp-bar-container">
+                                    <div class="opp-bar" style="width: 96%; background: var(--accent-amber);">
+                                        <span class="opp-value">72 (automation & PA outreach)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="opp-bar-row">
+                                <div class="opp-label">With Opportunities</div>
+                                <div class="opp-bar-container">
+                                    <div class="opp-bar" style="width: 4%; background: var(--accent-cyan);">
+                                        <span class="opp-value">3</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
