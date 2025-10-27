@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Advertising Performance - Synter Command Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="login-container">
+            <div class="login-box">
+                <h1>🔒 Synter Command</h1>
+                <div class="login-subtitle">Growth Dashboard Access</div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="password">Access Code</label>
+                        <input type="password" id="password" placeholder="Enter password" required autofocus>
+                    </div>
+                    <button type="submit" class="btn-tactical">Authenticate</button>
+                    <div class="error-message" id="errorMessage">⚠️ Invalid credentials. Access denied.</div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="dashboard">
+            <div class="header">
+                <button class="logout-btn" onclick="logout()">Disconnect</button>
+                <h1>📊 Weekly Advertising Performance</h1>
+                <div class="header-subtitle">Synter Command Center · Last Updated: Oct 27, 2025</div>
+            </div>
+
+            <div class="table-container">
+                <div class="table-title">Performance Metrics / 8-Week Historical</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th class="numeric">Week 10/26</th>
+                            <th class="numeric">Week 10/19</th>
+                            <th class="numeric">Week 10/12</th>
+                            <th class="numeric">Week 10/5</th>
+                            <th class="numeric">Week 9/28</th>
+                            <th class="numeric">Week 9/21</th>
+                            <th class="numeric">Week 9/14</th>
+                            <th class="numeric">Week 9/7</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Data will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
