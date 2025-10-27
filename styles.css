@@ -1,4 +1,4 @@
-/* Synter Tactical Design System */
+/* Synter Tactical Design System - Growth Command Center */
 :root {
     /* Core Surfaces */
     --bg-carbon-900: #0B0E12;
@@ -208,10 +208,11 @@ body {
 
 .header h1 {
     font-family: var(--font-display);
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 700;
     color: var(--text-hi);
     margin-bottom: 8px;
+    letter-spacing: 0.02em;
 }
 
 .header-subtitle {
@@ -244,15 +245,73 @@ body {
     border-color: var(--danger-red);
 }
 
-.table-container {
+/* KPI Grid */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.kpi-card {
+    background: var(--bg-carbon-850);
+    border: 1px solid var(--stroke-1);
+    border-radius: 6px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-low);
+    margin-bottom: 8px;
+}
+
+.kpi-value {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-hi);
+    font-variant-numeric: tabular-nums;
+}
+
+.kpi-delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    margin-top: 4px;
+}
+
+.kpi-delta.positive {
+    color: var(--sentinel-green);
+}
+
+.kpi-delta.negative {
+    color: var(--danger-red);
+}
+
+/* Charts Grid */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.chart-panel {
     background: var(--bg-carbon-850);
     border: 1px solid var(--stroke-1);
     border-radius: 6px;
     padding: 24px;
-    overflow-x: auto;
 }
 
-.table-title {
+.panel-title {
     font-family: var(--font-mono);
     font-size: 12px;
     letter-spacing: 0.08em;
@@ -261,18 +320,90 @@ body {
     margin-bottom: 16px;
 }
 
-table {
+canvas {
+    max-height: 300px;
+}
+
+/* Accordion */
+.accordion-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.accordion-item {
+    background: var(--bg-carbon-850);
+    border: 1px solid var(--stroke-1);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-tactical);
+    user-select: none;
+}
+
+.accordion-header:hover {
+    background: var(--bg-carbon-800);
+}
+
+.accordion-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.accordion-title h3 {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-hi);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.accordion-icon {
+    font-size: 20px;
+    transition: transform var(--duration-normal) var(--ease-tactical);
+}
+
+.accordion-item.active .accordion-icon {
+    transform: rotate(180deg);
+}
+
+.accordion-summary {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-mid);
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--duration-normal) var(--ease-tactical);
+}
+
+.accordion-item.active .accordion-content {
+    max-height: 2000px;
+}
+
+.accordion-table {
     width: 100%;
     border-collapse: collapse;
     font-family: var(--font-mono);
     font-size: 12px;
 }
 
-thead {
+.accordion-table thead {
     background: var(--bg-carbon-800);
 }
 
-th {
+.accordion-table th {
     font-size: 11px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -283,52 +414,31 @@ th {
     border-bottom: 1px solid var(--stroke-1);
 }
 
-th.numeric {
+.accordion-table th.numeric {
     text-align: right;
 }
 
-td {
+.accordion-table td {
     padding: 10px 12px;
     border-bottom: 1px solid var(--stroke-2);
     color: var(--text-mid);
 }
 
-td.numeric {
+.accordion-table td.numeric {
     text-align: right;
     font-variant-numeric: tabular-nums;
 }
 
-tbody tr:nth-child(even) {
+.accordion-table tbody tr:nth-child(even) {
     background: var(--bg-carbon-800);
 }
 
-tbody tr:hover {
+.accordion-table tbody tr:hover {
     background: rgba(19, 25, 34, 0.6);
 }
 
-tbody tr:last-child td {
+.accordion-table tbody tr:last-child td {
     border-bottom: none;
-}
-
-.metric-name {
-    font-weight: 600;
-    color: var(--text-hi);
-}
-
-.platform-indent {
-    padding-left: 24px;
-    color: var(--text-mid);
-    font-size: 11px;
-}
-
-.section-header {
-    background: var(--bg-carbon-700) !important;
-    font-weight: 700;
-}
-
-.section-header td {
-    color: var(--text-hi);
-    border-top: 1px solid var(--stroke-1);
 }
 
 /* Platform Colors */
@@ -339,27 +449,29 @@ tbody tr:last-child td {
 .platform-stackadapt { color: var(--accent-yellow); }
 
 /* Responsive */
+@media (max-width: 1024px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 768px) {
     body {
         padding: 12px;
     }
 
     .header h1 {
-        font-size: 20px;
+        font-size: 24px;
     }
 
-    .table-container {
-        padding: 16px;
-    }
-
-    th, td {
-        padding: 8px;
-        font-size: 11px;
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .logout-btn {
         position: static;
         display: block;
         margin-top: 16px;
+        width: 100%;
     }
 }

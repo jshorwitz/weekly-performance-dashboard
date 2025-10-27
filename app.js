@@ -1,5 +1,5 @@
 // Password protection
-const PASSWORD = 'growth2025'; // Change this to your desired password
+const PASSWORD = 'growth2025';
 
 const loginForm = document.getElementById('loginForm');
 const loginScreen = document.getElementById('loginScreen');
@@ -29,7 +29,7 @@ loginForm.addEventListener('submit', (e) => {
 function showDashboard() {
     loginScreen.style.display = 'none';
     dashboard.classList.add('active');
-    loadData();
+    loadDashboard();
 }
 
 function logout() {
@@ -39,117 +39,289 @@ function logout() {
     document.getElementById('password').value = '';
 }
 
-// CSV Data
-const csvData = `Metric,Week Ending 10/26/2025,Week Ending 10/19/2025,Week Ending 10/12/2025,Week Ending 10/5/2025,Week Ending 9/28/2025,Week Ending 9/21/2025,Week Ending 9/14/2025,Week Ending 9/7/2025,Notes
-Spend,,"$62,535.95","$60,351.30","$54,755.04","$48,835.36","$48,916.39","$46,074.52","$48,106.80",
-Stackadapt,,$0.00,$0.00,$0.00,"$4,666.86","$8,015.38","$7,995.28","$8,014.87",
-Google,,"$38,050.58","$30,480.45","$37,260.32","$28,920.18","$27,478.99","$27,690.84","$23,452.15",
-Linkedin,,"$4,232.96","$5,104.61","$6,367.25","$5,561.59","$4,073.01","$4,328.68","$7,338.80",
-Reddit,,"$3,143.38","$5,448.77","$5,329.35","$4,026.73","$3,206.09","$3,171.24","$3,182.32",
-Microsoft,,"$17,109.03","$19,317.47","$5,798.12","$5,660.00","$6,142.92","$2,888.48","$6,118.66",
-Impressions,,"3,090,702","5,500,001","6,425,653","7,347,913","7,093,117","5,428,627","5,303,571",
-StackAdapt,,0,0,0,"581,088","1,811,060","1,900,059","1,524,596",
-Google,,"1,193,280","2,085,473","1,468,017","194,077","163,784","237,071","246,201",
-Linkedin,,"1,378,221","2,362,739","3,801,685","2,594,511","1,243,091","892,620","761,867",
-Reddit,,"383,818","716,611","758,431","562,743","439,252","445,308","1,074,105",
-Microsoft,,"135,383","335,178","397,520","3,415,494","3,435,930","1,953,569","1,696,802",
-Clicks,,"571,320","116,157","72,165","43,537","44,229","30,110","50,513",
-StackAdapt,,0,0,0,293,"1,001",808,715,
-Google,,"565,557","105,074","53,635","11,871","9,656","15,751","9,656",
-Linkedin,,"1,533","2,121","2,531","1,973","1,609","1,110","5,857",
-Reddit,,"1,776","3,973","2,780","1,362","1,225","1,346","2,854",
-Microsoft,,"2,454","4,989","13,219","28,038","30,738","11,095","31,431",
-Click-Through Rate (CTR),,1.72%,1.20%,1.62%,1.46%,1.45%,1.76%,1.37%,
-StackAdapt,,-,0.00%,0.00%,0.05%,0.06%,0.04%,0.05%,
-Google,,4.48%,3.89%,4.33%,6.12%,5.90%,6.64%,3.92%,
-Linkedin,,0.11%,0.09%,0.07%,0.08%,0.13%,0.35%,0.77%,
-Reddit,,0.46%,0.55%,0.37%,0.24%,0.28%,0.30%,0.27%,
-Microsoft,,1.81%,1.49%,3.33%,0.82%,0.89%,1.47%,1.85%,
-Conversions (page views),,3540,18733.85,11337.46,4227,2923,5700,4500,
-StackAdapt,,0,0,0,13,11,273,221,
-Google,,"1,374","16,097","8,693","2,387","1,692","4,191","2,606",
-Linkedin,,691,"1,749","2,202","1,586","1,001",963,"1,382",
-Reddit,,1183,344,442,241,219,273,291,
-Microsoft,,292,544,,,,,,
-"Cost Per Interaction (clicks, engagements)",,$5.41,$47.35,$89.04,$168.77,$160.37,$180.29,$104.99,
-Cost Per Conversion,,$17.67,$3.22,$4.83,$11.55,$16.73,$8.08,$10.69,
-AIQLs,,,364.00,44.00,51.00,20.00,27.00,15.00,
-Cost Per AIQL,,,$165.80,"$1,244.43",$957.56,"$2,445.82","$1,706.46","$3,207.12",`;
-
-function loadData() {
-    const tbody = document.getElementById('tableBody');
-    const rows = csvData.split('\n').slice(1); // Skip header row
-
-    const sectionHeaders = ['Spend', 'Impressions', 'Clicks', 'Click-Through Rate (CTR)', 'Conversions (page views)'];
-    const platforms = {
-        'Stackadapt': 'platform-stackadapt',
-        'StackAdapt': 'platform-stackadapt',
-        'Google': 'platform-google',
-        'Linkedin': 'platform-linkedin',
-        'Reddit': 'platform-reddit',
-        'Microsoft': 'platform-microsoft'
-    };
-
-    rows.forEach(row => {
-        const cols = parseCSVRow(row);
-        if (cols.length > 0 && cols[0]) {
-            const tr = document.createElement('tr');
-            
-            // Check if this is a section header
-            const isSection = sectionHeaders.some(h => cols[0].includes(h));
-            const isPlatform = platforms[cols[0]] !== undefined;
-            
-            if (isSection) {
-                tr.classList.add('section-header');
+// Data structure
+const weeklyData = {
+    weeks: ['10/26', '10/19', '10/12', '10/5', '9/28', '9/21', '9/14', '9/7'],
+    categories: {
+        'Spend': {
+            icon: '💰',
+            total: [62535.95, 60351.30, 54755.04, 48835.36, 48916.39, 46074.52, 48106.80],
+            channels: {
+                'Google': [38050.58, 30480.45, 37260.32, 28920.18, 27478.99, 27690.84, 23452.15],
+                'Microsoft': [17109.03, 19317.47, 5798.12, 5660.00, 6142.92, 2888.48, 6118.66],
+                'Reddit': [3143.38, 5448.77, 5329.35, 4026.73, 3206.09, 3171.24, 3182.32],
+                'Linkedin': [4232.96, 5104.61, 6367.25, 5561.59, 4073.01, 4328.68, 7338.80],
+                'Stackadapt': [0.00, 0.00, 0.00, 4666.86, 8015.38, 7995.28, 8014.87]
             }
+        },
+        'Impressions': {
+            icon: '👁️',
+            total: [3090702, 5500001, 6425653, 7347913, 7093117, 5428627, 5303571],
+            channels: {
+                'Google': [1193280, 2085473, 1468017, 194077, 163784, 237071, 246201],
+                'Microsoft': [135383, 335178, 397520, 3415494, 3435930, 1953569, 1696802],
+                'Reddit': [383818, 716611, 758431, 562743, 439252, 445308, 1074105],
+                'Linkedin': [1378221, 2362739, 3801685, 2594511, 1243091, 892620, 761867],
+                'StackAdapt': [0, 0, 0, 581088, 1811060, 1900059, 1524596]
+            }
+        },
+        'Clicks': {
+            icon: '🖱️',
+            total: [571320, 116157, 72165, 43537, 44229, 30110, 50513],
+            channels: {
+                'Google': [565557, 105074, 53635, 11871, 9656, 15751, 9656],
+                'Microsoft': [2454, 4989, 13219, 28038, 30738, 11095, 31431],
+                'Reddit': [1776, 3973, 2780, 1362, 1225, 1346, 2854],
+                'Linkedin': [1533, 2121, 2531, 1973, 1609, 1110, 5857],
+                'StackAdapt': [0, 0, 0, 293, 1001, 808, 715]
+            }
+        },
+        'Conversions': {
+            icon: '📈',
+            total: [3540, 18733.85, 11337.46, 4227, 2923, 5700, 4500],
+            channels: {
+                'Google': [1374, 16097, 8693, 2387, 1692, 4191, 2606],
+                'Microsoft': [292, 544, 0, 0, 0, 0, 0],
+                'Reddit': [1183, 344, 442, 241, 219, 273, 291],
+                'Linkedin': [691, 1749, 2202, 1586, 1001, 963, 1382],
+                'StackAdapt': [0, 0, 0, 13, 11, 273, 221]
+            }
+        }
+    }
+};
 
-            cols.forEach((col, index) => {
-                const td = document.createElement('td');
-                
-                if (index === 0) {
-                    // Metric name column
-                    if (isPlatform) {
-                        td.className = `platform-indent ${platforms[col]}`;
-                    } else {
-                        td.className = isSection ? 'metric-name' : 'metric-name';
+function loadDashboard() {
+    renderKPIs();
+    renderCharts();
+    renderAccordions();
+}
+
+function renderKPIs() {
+    const kpiGrid = document.getElementById('kpiGrid');
+    const currentWeek = 0; // Latest week
+    const prevWeek = 1;
+    
+    const kpis = [
+        {
+            label: 'Total Spend',
+            value: `$${formatNumber(weeklyData.categories['Spend'].total[currentWeek])}`,
+            delta: calculateDelta(weeklyData.categories['Spend'].total[currentWeek], weeklyData.categories['Spend'].total[prevWeek])
+        },
+        {
+            label: 'Total Impressions',
+            value: formatNumber(weeklyData.categories['Impressions'].total[currentWeek]),
+            delta: calculateDelta(weeklyData.categories['Impressions'].total[currentWeek], weeklyData.categories['Impressions'].total[prevWeek])
+        },
+        {
+            label: 'Total Clicks',
+            value: formatNumber(weeklyData.categories['Clicks'].total[currentWeek]),
+            delta: calculateDelta(weeklyData.categories['Clicks'].total[currentWeek], weeklyData.categories['Clicks'].total[prevWeek])
+        },
+        {
+            label: 'Total Conversions',
+            value: formatNumber(weeklyData.categories['Conversions'].total[currentWeek]),
+            delta: calculateDelta(weeklyData.categories['Conversions'].total[currentWeek], weeklyData.categories['Conversions'].total[prevWeek])
+        }
+    ];
+    
+    kpiGrid.innerHTML = kpis.map(kpi => `
+        <div class="kpi-card">
+            <div class="kpi-label">${kpi.label}</div>
+            <div class="kpi-value">${kpi.value}</div>
+            <div class="kpi-delta ${kpi.delta >= 0 ? 'positive' : 'negative'}">
+                ${kpi.delta >= 0 ? '▲' : '▼'} ${Math.abs(kpi.delta).toFixed(1)}%
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderCharts() {
+    renderSpendChart();
+    renderChannelPieChart();
+}
+
+function renderSpendChart() {
+    const ctx = document.getElementById('spendChart').getContext('2d');
+    const data = weeklyData.categories['Spend'];
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: weeklyData.weeks,
+            datasets: Object.keys(data.channels).map((channel, index) => ({
+                label: channel,
+                data: data.channels[channel],
+                borderColor: getChannelColor(channel),
+                backgroundColor: getChannelColor(channel, 0.1),
+                tension: 0.3,
+                fill: false
+            }))
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#B8C0CC',
+                        font: {
+                            family: "'IBM Plex Mono', monospace",
+                            size: 11
+                        }
                     }
-                    td.textContent = col;
-                } else if (index === cols.length - 1) {
-                    // Notes column
-                    td.className = 'neutral';
-                    td.textContent = col || '—';
-                } else {
-                    // Data columns
-                    td.className = 'numeric';
-                    td.textContent = col || '—';
                 }
-                
-                tr.appendChild(td);
-            });
-            
-            tbody.appendChild(tr);
+            },
+            scales: {
+                y: {
+                    ticks: {
+                        color: '#8B94A3',
+                        font: {
+                            family: "'IBM Plex Mono', monospace"
+                        },
+                        callback: function(value) {
+                            return '$' + (value / 1000).toFixed(0) + 'K';
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(255,255,255,0.04)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#8B94A3',
+                        font: {
+                            family: "'IBM Plex Mono', monospace"
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(255,255,255,0.02)'
+                    }
+                }
+            }
         }
     });
 }
 
-function parseCSVRow(row) {
-    const result = [];
-    let current = '';
-    let inQuotes = false;
+function renderChannelPieChart() {
+    const ctx = document.getElementById('channelPieChart').getContext('2d');
+    const currentWeek = 0;
+    const channels = weeklyData.categories['Spend'].channels;
     
-    for (let i = 0; i < row.length; i++) {
-        const char = row[i];
-        
-        if (char === '"') {
-            inQuotes = !inQuotes;
-        } else if (char === ',' && !inQuotes) {
-            result.push(current);
-            current = '';
-        } else {
-            current += char;
+    const labels = Object.keys(channels);
+    const data = labels.map(channel => channels[channel][currentWeek]);
+    
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: labels.map(channel => getChannelColor(channel, 0.8)),
+                borderColor: labels.map(channel => getChannelColor(channel)),
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        color: '#B8C0CC',
+                        font: {
+                            family: "'IBM Plex Mono', monospace",
+                            size: 11
+                        },
+                        generateLabels: function(chart) {
+                            const data = chart.data;
+                            return data.labels.map((label, i) => ({
+                                text: `${label}: $${formatNumber(data.datasets[0].data[i])}`,
+                                fillStyle: data.datasets[0].backgroundColor[i],
+                                hidden: false,
+                                index: i
+                            }));
+                        }
+                    }
+                }
+            }
         }
-    }
+    });
+}
+
+function renderAccordions() {
+    const container = document.getElementById('accordionContainer');
+    const categories = weeklyData.categories;
     
-    result.push(current);
-    return result;
+    container.innerHTML = Object.keys(categories).map((category, index) => {
+        const data = categories[category];
+        const currentValue = data.total[0];
+        const summary = category === 'Spend' ? `$${formatNumber(currentValue)}` : formatNumber(currentValue);
+        
+        return `
+            <div class="accordion-item ${index === 0 ? 'active' : ''}" id="accordion-${index}">
+                <div class="accordion-header" onclick="toggleAccordion(${index})">
+                    <div class="accordion-title">
+                        <span>${data.icon}</span>
+                        <h3>${category}</h3>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <span class="accordion-summary">${summary}</span>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                </div>
+                <div class="accordion-content">
+                    <table class="accordion-table">
+                        <thead>
+                            <tr>
+                                <th>Channel</th>
+                                ${weeklyData.weeks.map(week => `<th class="numeric">${week}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${Object.keys(data.channels).map(channel => `
+                                <tr>
+                                    <td class="platform-${channel.toLowerCase()}">${channel}</td>
+                                    ${data.channels[channel].map((value, i) => `
+                                        <td class="numeric">${category === 'Spend' ? '$' + formatNumber(value) : formatNumber(value)}</td>
+                                    `).join('')}
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function toggleAccordion(index) {
+    const item = document.getElementById(`accordion-${index}`);
+    item.classList.toggle('active');
+}
+
+function getChannelColor(channel, alpha = 1) {
+    const colors = {
+        'Google': `rgba(77, 214, 255, ${alpha})`,
+        'Microsoft': `rgba(156, 255, 90, ${alpha})`,
+        'Reddit': `rgba(240, 179, 76, ${alpha})`,
+        'Linkedin': `rgba(41, 127, 135, ${alpha})`,
+        'Stackadapt': `rgba(231, 242, 75, ${alpha})`,
+        'StackAdapt': `rgba(231, 242, 75, ${alpha})`
+    };
+    return colors[channel] || `rgba(184, 192, 204, ${alpha})`;
+}
+
+function formatNumber(num) {
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(2) + 'M';
+    } else if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'K';
+    }
+    return num.toFixed(0);
+}
+
+function calculateDelta(current, previous) {
+    if (previous === 0) return 0;
+    return ((current - previous) / previous) * 100;
 }
