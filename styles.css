@@ -656,3 +656,89 @@ canvas {
         grid-column: auto;
     }
 }
+
+/* LinkedIn Campaign Section */
+.linkedin-section {
+    margin-top: 32px;
+}
+
+.campaign-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+.campaign-card {
+    background: var(--bg-carbon-850);
+    border: 1px solid var(--stroke-1);
+    border-radius: 6px;
+    padding: 20px;
+    position: relative;
+}
+
+.campaign-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.campaign-name {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-hi);
+    margin-bottom: 4px;
+}
+
+.campaign-status {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 4px 8px;
+    background: var(--bg-carbon-800);
+    border: 1px solid var(--sentinel-green);
+    color: var(--sentinel-green);
+    border-radius: 4px;
+}
+
+.campaign-budget {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-low);
+    margin-bottom: 12px;
+}
+
+.campaign-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.metric-small {
+    display: flex;
+    flex-direction: column;
+}
+
+.metric-small-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-low);
+    margin-bottom: 4px;
+}
+
+.metric-small-value {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-hi);
+}
+
+@media (max-width: 768px) {
+    .campaign-cards-grid {
+        grid-template-columns: 1fr;
+    }
+}

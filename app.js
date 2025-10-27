@@ -103,6 +103,7 @@ function loadDashboard() {
     renderCharts();
     renderAccordions();
     renderAIQLBreakdown();
+    renderLinkedInCampaigns();
 }
 
 function renderKPIs() {
@@ -213,7 +214,7 @@ function renderSpendChart() {
 
 function renderChannelPieChart() {
     const ctx = document.getElementById('channelPieChart').getContext('2d');
-    const currentWeek = 0;
+    const currentWeek = weeklyData.weeks.length - 1; // Latest week (now last in array)
     const channels = weeklyData.categories['Spend'].channels;
     
     const labels = Object.keys(channels);
@@ -264,7 +265,7 @@ function renderAccordions() {
     
     container.innerHTML = Object.keys(categories).map((category, index) => {
         const data = categories[category];
-        const currentValue = data.total[0];
+        const currentValue = data.total[data.total.length - 1]; // Latest week (now last in array)
         const summary = category === 'Spend' ? `$${formatNumber(currentValue)}` : formatNumber(currentValue);
         
         // Categories with channel breakdown
@@ -276,7 +277,7 @@ function renderAccordions() {
             const spend = weeklyData.categories['Spend'].total;
             const costPer = data.total.map((val, i) => val > 0 ? (spend[i] / val) : 0);
             data.costPer = costPer;
-            costPerMetric = `$${formatNumber(costPer[0])} CPL`;
+            costPerMetric = `$${formatNumber(costPer[costPer.length - 1])} CPL`; // Latest week
         }
         
         return `
