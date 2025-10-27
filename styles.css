@@ -647,4 +647,12 @@ canvas {
     .breakdown-stats-grid {
         grid-template-columns: 1fr;
     }
+
+    .breakdown-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .breakdown-card.wide {
+        grid-column: auto;
+    }
 }

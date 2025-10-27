@@ -41,59 +41,59 @@ function logout() {
 
 // Data structure
 const weeklyData = {
-    weeks: ['10/26', '10/19', '10/12', '10/5', '9/28', '9/21', '9/14', '9/7'],
+    weeks: ['9/7', '9/14', '9/21', '9/28', '10/5', '10/12', '10/19', '10/26'],
     categories: {
         'Spend': {
             icon: '💰',
-            total: [62535.95, 60351.30, 54755.04, 48835.36, 48916.39, 46074.52, 48106.80],
+            total: [48106.80, 46074.52, 48916.39, 48835.36, 54755.04, 60351.30, 62535.95],
             channels: {
-                'Google': [38050.58, 30480.45, 37260.32, 28920.18, 27478.99, 27690.84, 23452.15],
-                'Microsoft': [17109.03, 19317.47, 5798.12, 5660.00, 6142.92, 2888.48, 6118.66],
-                'Reddit': [3143.38, 5448.77, 5329.35, 4026.73, 3206.09, 3171.24, 3182.32],
-                'Linkedin': [4232.96, 5104.61, 6367.25, 5561.59, 4073.01, 4328.68, 7338.80],
-                'Stackadapt': [0.00, 0.00, 0.00, 4666.86, 8015.38, 7995.28, 8014.87]
+                'Google': [23452.15, 27690.84, 27478.99, 28920.18, 37260.32, 30480.45, 38050.58],
+                'Microsoft': [6118.66, 2888.48, 6142.92, 5660.00, 5798.12, 19317.47, 17109.03],
+                'Reddit': [3182.32, 3171.24, 3206.09, 4026.73, 5329.35, 5448.77, 3143.38],
+                'Linkedin': [7338.80, 4328.68, 4073.01, 5561.59, 6367.25, 5104.61, 4232.96],
+                'Stackadapt': [8014.87, 7995.28, 8015.38, 4666.86, 0.00, 0.00, 0.00]
             }
         },
         'Impressions': {
             icon: '👁️',
-            total: [3090702, 5500001, 6425653, 7347913, 7093117, 5428627, 5303571],
+            total: [5303571, 5428627, 7093117, 7347913, 6425653, 5500001, 3090702],
             channels: {
-                'Google': [1193280, 2085473, 1468017, 194077, 163784, 237071, 246201],
-                'Microsoft': [135383, 335178, 397520, 3415494, 3435930, 1953569, 1696802],
-                'Reddit': [383818, 716611, 758431, 562743, 439252, 445308, 1074105],
-                'Linkedin': [1378221, 2362739, 3801685, 2594511, 1243091, 892620, 761867],
-                'StackAdapt': [0, 0, 0, 581088, 1811060, 1900059, 1524596]
+                'Google': [246201, 237071, 163784, 194077, 1468017, 2085473, 1193280],
+                'Microsoft': [1696802, 1953569, 3435930, 3415494, 397520, 335178, 135383],
+                'Reddit': [1074105, 445308, 439252, 562743, 758431, 716611, 383818],
+                'Linkedin': [761867, 892620, 1243091, 2594511, 3801685, 2362739, 1378221],
+                'StackAdapt': [1524596, 1900059, 1811060, 581088, 0, 0, 0]
             }
         },
         'Clicks': {
             icon: '🖱️',
-            total: [571320, 116157, 72165, 43537, 44229, 30110, 50513],
+            total: [50513, 30110, 44229, 43537, 72165, 116157, 571320],
             channels: {
-                'Google': [565557, 105074, 53635, 11871, 9656, 15751, 9656],
-                'Microsoft': [2454, 4989, 13219, 28038, 30738, 11095, 31431],
-                'Reddit': [1776, 3973, 2780, 1362, 1225, 1346, 2854],
-                'Linkedin': [1533, 2121, 2531, 1973, 1609, 1110, 5857],
-                'StackAdapt': [0, 0, 0, 293, 1001, 808, 715]
+                'Google': [9656, 15751, 9656, 11871, 53635, 105074, 565557],
+                'Microsoft': [31431, 11095, 30738, 28038, 13219, 4989, 2454],
+                'Reddit': [2854, 1346, 1225, 1362, 2780, 3973, 1776],
+                'Linkedin': [5857, 1110, 1609, 1973, 2531, 2121, 1533],
+                'StackAdapt': [715, 808, 1001, 293, 0, 0, 0]
             }
         },
         'Conversions': {
             icon: '📈',
-            total: [3540, 18733.85, 11337.46, 4227, 2923, 5700, 4500],
+            total: [4500, 5700, 2923, 4227, 11337.46, 18733.85, 3540],
             channels: {
-                'Google': [1374, 16097, 8693, 2387, 1692, 4191, 2606],
-                'Microsoft': [292, 544, 0, 0, 0, 0, 0],
-                'Reddit': [1183, 344, 442, 241, 219, 273, 291],
-                'Linkedin': [691, 1749, 2202, 1586, 1001, 963, 1382],
-                'StackAdapt': [0, 0, 0, 13, 11, 273, 221]
+                'Google': [2606, 4191, 1692, 2387, 8693, 16097, 1374],
+                'Microsoft': [0, 0, 0, 0, 0, 544, 292],
+                'Reddit': [291, 273, 219, 241, 442, 344, 1183],
+                'Linkedin': [1382, 963, 1001, 1586, 2202, 1749, 691],
+                'StackAdapt': [221, 273, 11, 13, 0, 0, 0]
             }
         },
         'AIQLs': {
             icon: '🎯',
-            total: [43, 46, 56, 1, null, null, null, null]
+            total: [null, null, null, null, 1, 56, 46, 43]
         },
         'Hand Raisers': {
             icon: '✋',
-            total: [5, 6, 16, 12, 7, 5, 5, 3]
+            total: [3, 5, 5, 7, 12, 16, 6, 5]
         }
     }
 };
@@ -107,8 +107,8 @@ function loadDashboard() {
 
 function renderKPIs() {
     const kpiGrid = document.getElementById('kpiGrid');
-    const currentWeek = 0; // Latest week
-    const prevWeek = 1;
+    const currentWeek = weeklyData.weeks.length - 1; // Latest week (now last in array)
+    const prevWeek = currentWeek - 1;
     
     const kpis = [
         {
@@ -375,4 +375,116 @@ function formatNumber(num) {
 function calculateDelta(current, previous) {
     if (previous === 0) return 0;
     return ((current - previous) / previous) * 100;
+}
+
+function renderAIQLBreakdown() {
+    // Email Type Chart
+    const emailCtx = document.getElementById('emailTypeChart').getContext('2d');
+    new Chart(emailCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Free Emails', 'Attached to Accounts'],
+            datasets: [{
+                data: [96, 4],
+                backgroundColor: [
+                    'rgba(77, 214, 255, 0.8)',
+                    'rgba(62, 224, 143, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(77, 214, 255, 1)',
+                    'rgba(62, 224, 143, 1)'
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#B8C0CC',
+                        font: {
+                            family: "'IBM Plex Mono', monospace",
+                            size: 11
+                        },
+                        generateLabels: function(chart) {
+                            const data = chart.data;
+                            return data.labels.map((label, i) => ({
+                                text: `${label}: ${data.datasets[0].data[i]}%`,
+                                fillStyle: data.datasets[0].backgroundColor[i],
+                                hidden: false,
+                                index: i
+                            }));
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Segmentation Chart
+    const segCtx = document.getElementById('segmentationChart').getContext('2d');
+    new Chart(segCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Strategic', 'Not Known', 'Enterprise', 'SMB', 'Self-Service'],
+            datasets: [{
+                label: 'Accounts',
+                data: [14, 53, 2, 2, 1],
+                backgroundColor: [
+                    'rgba(228, 69, 58, 0.8)',
+                    'rgba(139, 148, 163, 0.8)',
+                    'rgba(156, 255, 90, 0.8)',
+                    'rgba(77, 214, 255, 0.8)',
+                    'rgba(240, 179, 76, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(228, 69, 58, 1)',
+                    'rgba(139, 148, 163, 1)',
+                    'rgba(156, 255, 90, 1)',
+                    'rgba(77, 214, 255, 1)',
+                    'rgba(240, 179, 76, 1)'
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#8B94A3',
+                        font: {
+                            family: "'IBM Plex Mono', monospace"
+                        },
+                        stepSize: 10
+                    },
+                    grid: {
+                        color: 'rgba(255,255,255,0.04)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#8B94A3',
+                        font: {
+                            family: "'IBM Plex Mono', monospace",
+                            size: 10
+                        }
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
 }
