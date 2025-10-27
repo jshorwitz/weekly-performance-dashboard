@@ -86,6 +86,14 @@ const weeklyData = {
                 'Linkedin': [691, 1749, 2202, 1586, 1001, 963, 1382],
                 'StackAdapt': [0, 0, 0, 13, 11, 273, 221]
             }
+        },
+        'AIQLs': {
+            icon: '🎯',
+            total: [43, 46, 56, 1, null, null, null, null]
+        },
+        'Hand Raisers': {
+            icon: '✋',
+            total: [5, 6, 16, 12, 7, 5, 5, 3]
         }
     }
 };

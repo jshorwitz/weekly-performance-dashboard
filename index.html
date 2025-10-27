@@ -32,31 +32,30 @@
         <div id="dashboard" class="dashboard">
             <div class="header">
                 <button class="logout-btn" onclick="logout()">Disconnect</button>
-                <h1>📊 Weekly Advertising Performance</h1>
-                <div class="header-subtitle">Synter Command Center · Last Updated: Oct 27, 2025</div>
+                <h1>⚡ GROWTH COMMAND CENTER</h1>
+                <div class="header-subtitle">Tactical Dashboard · Week Ending Oct 26, 2025</div>
             </div>
 
-            <div class="table-container">
-                <div class="table-title">Performance Metrics / 8-Week Historical</div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Metric</th>
-                            <th class="numeric">Week 10/26</th>
-                            <th class="numeric">Week 10/19</th>
-                            <th class="numeric">Week 10/12</th>
-                            <th class="numeric">Week 10/5</th>
-                            <th class="numeric">Week 9/28</th>
-                            <th class="numeric">Week 9/21</th>
-                            <th class="numeric">Week 9/14</th>
-                            <th class="numeric">Week 9/7</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        <!-- Data will be inserted here by JavaScript -->
-                    </tbody>
-                </table>
+            <!-- KPI Summary Cards -->
+            <div class="kpi-grid" id="kpiGrid">
+                <!-- Will be populated by JavaScript -->
+            </div>
+
+            <!-- Channel Performance Charts -->
+            <div class="charts-grid">
+                <div class="chart-panel">
+                    <div class="panel-title">Spend Trend / 8-Week Historical</div>
+                    <canvas id="spendChart"></canvas>
+                </div>
+                <div class="chart-panel">
+                    <div class="panel-title">Channel Distribution / Current Week</div>
+                    <canvas id="channelPieChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Accordion Tables -->
+            <div class="accordion-container" id="accordionContainer">
+                <!-- Will be populated by JavaScript -->
             </div>
         </div>
     </div>
