@@ -101,28 +101,104 @@ def main():
         content = content.replace(match.group(0), f"{match.group(1)}{new_values}{match.group(3)}")
         print(f"✅ Updated Conversions total")
     
-    # Update Google channel data (last value in each Google array)
-    # Spend
+    # Update ALL channel data for Google, Microsoft, Reddit
+    
+    # Google Spend
     google_spend_pattern = r"('Google': \[)([\d.,\s]+)(\])"
     matches = list(re.finditer(google_spend_pattern, content))
     if matches:
-        match = matches[0]  # First match is in Spend section
+        match = matches[0]
         values = [float(v.strip()) for v in match.group(2).split(',')]
         values[-1] = round(GOOGLE_DATA['spend'], 2)
         new_values = ', '.join(str(v) for v in values)
         content = content.replace(match.group(0), f"{match.group(1)}{new_values}{match.group(3)}", 1)
         print(f"✅ Updated Google Spend")
     
-    # Update Microsoft and Reddit to $0 (campaigns paused week 10/26)
+    # Google Impressions (in Impressions section)
+    impr_section_start = content.find("'Impressions':")
+    if impr_section_start > 0:
+        impr_section = content[impr_section_start:impr_section_start+2000]
+        google_impr_match = re.search(r"('Google': \[)([\d.,\s]+)(\])", impr_section)
+        if google_impr_match:
+            values = [int(v.strip()) for v in google_impr_match.group(2).split(',')]
+            values[-1] = GOOGLE_DATA['impressions']
+            new_values = ', '.join(str(v) for v in values)
+            old_str = google_impr_match.group(0)
+            new_str = f"{google_impr_match.group(1)}{new_values}{google_impr_match.group(3)}"
+            content = content.replace(old_str, new_str, 1)
+            print(f"✅ Updated Google Impressions")
+    
+    # Google Clicks (in Clicks section)
+    clicks_section_start = content.find("'Clicks':")
+    if clicks_section_start > 0:
+        clicks_section = content[clicks_section_start:clicks_section_start+2000]
+        google_clicks_match = re.search(r"('Google': \[)([\d.,\s]+)(\])", clicks_section)
+        if google_clicks_match:
+            values = [int(v.strip()) for v in google_clicks_match.group(2).split(',')]
+            values[-1] = GOOGLE_DATA['clicks']
+            new_values = ', '.join(str(v) for v in values)
+            old_str = google_clicks_match.group(0)
+            new_str = f"{google_clicks_match.group(1)}{new_values}{google_clicks_match.group(3)}"
+            content = content.replace(old_str, new_str, 1)
+            print(f"✅ Updated Google Clicks")
+    
+    # Google Conversions (in Conversions section)
+    conv_section_start = content.find("'Conversions':")
+    if conv_section_start > 0:
+        conv_section = content[conv_section_start:conv_section_start+2000]
+        google_conv_match = re.search(r"('Google': \[)([\d.,\s]+)(\])", conv_section)
+        if google_conv_match:
+            values = [float(v.strip()) for v in google_conv_match.group(2).split(',')]
+            values[-1] = round(GOOGLE_DATA['conversions'], 1)
+            new_values = ', '.join(str(v) for v in values)
+            old_str = google_conv_match.group(0)
+            new_str = f"{google_conv_match.group(1)}{new_values}{google_conv_match.group(3)}"
+            content = content.replace(old_str, new_str, 1)
+            print(f"✅ Updated Google Conversions")
+    
+    # Update Microsoft (paused - all zeros)
     microsoft_spend_pattern = r"('Microsoft': \[)([\d.,\s]+)(\])"
     matches = list(re.finditer(microsoft_spend_pattern, content))
     if matches:
-        match = matches[0]  # First match is in Spend section
+        match = matches[0]
         values = [float(v.strip()) for v in match.group(2).split(',')]
         values[-1] = 0.00
         new_values = ', '.join(str(v) for v in values)
         content = content.replace(match.group(0), f"{match.group(1)}{new_values}{match.group(3)}", 1)
-        print(f"✅ Updated Microsoft Spend to $0")
+        print(f"✅ Updated Microsoft Spend")
+    
+    # Microsoft Impressions
+    if impr_section_start > 0:
+        impr_section = content[impr_section_start:impr_section_start+2000]
+        ms_impr_match = re.search(r"('Microsoft': \[)([\d.,\s]+)(\])", impr_section)
+        if ms_impr_match:
+            values = [int(v.strip()) for v in ms_impr_match.group(2).split(',')]
+            values[-1] = 0
+            new_values = ', '.join(str(v) for v in values)
+            content = content.replace(ms_impr_match.group(0), f"{ms_impr_match.group(1)}{new_values}{ms_impr_match.group(3)}", 1)
+            print(f"✅ Updated Microsoft Impressions")
+    
+    # Microsoft Clicks
+    if clicks_section_start > 0:
+        clicks_section = content[clicks_section_start:clicks_section_start+2000]
+        ms_clicks_match = re.search(r"('Microsoft': \[)([\d.,\s]+)(\])", clicks_section)
+        if ms_clicks_match:
+            values = [int(v.strip()) for v in ms_clicks_match.group(2).split(',')]
+            values[-1] = 0
+            new_values = ', '.join(str(v) for v in values)
+            content = content.replace(ms_clicks_match.group(0), f"{ms_clicks_match.group(1)}{new_values}{ms_clicks_match.group(3)}", 1)
+            print(f"✅ Updated Microsoft Clicks")
+    
+    # Microsoft Conversions
+    if conv_section_start > 0:
+        conv_section = content[conv_section_start:conv_section_start+2000]
+        ms_conv_match = re.search(r"('Microsoft': \[)([\d.,\s]+)(\])", conv_section)
+        if ms_conv_match:
+            values = [float(v.strip()) for v in ms_conv_match.group(2).split(',')]
+            values[-1] = 0
+            new_values = ', '.join(str(v) for v in values)
+            content = content.replace(ms_conv_match.group(0), f"{ms_conv_match.group(1)}{new_values}{ms_conv_match.group(3)}", 1)
+            print(f"✅ Updated Microsoft Conversions")
     
     reddit_spend_pattern = r"('Reddit': \[)([\d.,\s]+)(\])"
     matches = list(re.finditer(reddit_spend_pattern, content))
