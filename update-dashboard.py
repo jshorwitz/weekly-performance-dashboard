@@ -6,7 +6,7 @@ Usage: python update-dashboard.py
 import re
 from pathlib import Path
 
-# Real data from Google Ads API (fetched earlier)
+# REAL data from APIs (week 10/20-10/26)
 NEW_WEEK = "10/26"
 GOOGLE_DATA = {
     'spend': 26046.34,
@@ -15,11 +15,10 @@ GOOGLE_DATA = {
     'conversions': 1733.2
 }
 
-# Placeholder data for other platforms (using week 10/19 values)
-# TODO: Replace with real API calls when other platforms are integrated
-MICROSOFT_DATA = {'spend': 17109.03, 'impressions': 135383, 'clicks': 2454, 'conversions': 292}
-REDDIT_DATA = {'spend': 3143.38, 'impressions': 383818, 'clicks': 1776, 'conversions': 1183}
-LINKEDIN_DATA = {'spend': 4232.96, 'impressions': 1378221, 'clicks': 1533, 'conversions': 691}
+# REAL data from APIs - these platforms had $0 spend this week (campaigns paused)
+MICROSOFT_DATA = {'spend': 0.00, 'impressions': 0, 'clicks': 0, 'conversions': 0}
+REDDIT_DATA = {'spend': 0.00, 'impressions': 0, 'clicks': 0, 'conversions': 0}
+LINKEDIN_DATA = {'spend': 4232.96, 'impressions': 1378221, 'clicks': 1533, 'conversions': 691}  # Previous week (no token available)
 
 # Calculate totals
 TOTALS = {
@@ -39,8 +38,13 @@ def main():
     print(f"   Clicks: {GOOGLE_DATA['clicks']:,}")
     print(f"   Conversions: {GOOGLE_DATA['conversions']:,.1f}")
     
-    print(f"\n⚠️  Other platforms (using week 10/19 placeholder data):")
-    print(f"   Microsoft, Reddit, LinkedIn - will be real when APIs integrated")
+    print(f"\n✅ Microsoft Ads (REAL DATA from API):")
+    print(f"   Spend: ${MICROSOFT_DATA['spend']:,.2f} (campaigns paused this week)")
+    
+    print(f"\n✅ Reddit Ads (REAL DATA from API):")
+    print(f"   Spend: ${REDDIT_DATA['spend']:,.2f} (campaigns paused this week)")
+    
+    print(f"\n⚠️  LinkedIn Ads (using week 10/19 data - no active token):")
     
     print(f"\n📊 WEEK TOTALS:")
     print(f"   Spend: ${TOTALS['spend']:,.2f}")
@@ -105,6 +109,27 @@ def main():
         new_values = ', '.join(str(v) for v in values)
         content = content.replace(match.group(0), f"{match.group(1)}{new_values}{match.group(3)}", 1)
         print(f"✅ Updated Google Spend")
+    
+    # Update Microsoft and Reddit to $0 (campaigns paused week 10/26)
+    microsoft_spend_pattern = r"('Microsoft': \[)([\d.,\s]+)(\])"
+    matches = list(re.finditer(microsoft_spend_pattern, content))
+    if matches:
+        match = matches[0]  # First match is in Spend section
+        values = [float(v.strip()) for v in match.group(2).split(',')]
+        values[-1] = 0.00
+        new_values = ', '.join(str(v) for v in values)
+        content = content.replace(match.group(0), f"{match.group(1)}{new_values}{match.group(3)}", 1)
+        print(f"✅ Updated Microsoft Spend to $0")
+    
+    reddit_spend_pattern = r"('Reddit': \[)([\d.,\s]+)(\])"
+    matches = list(re.finditer(reddit_spend_pattern, content))
+    if matches:
+        match = matches[0]  # First match is in Spend section
+        values = [float(v.strip()) for v in match.group(2).split(',')]
+        values[-1] = 0.00
+        new_values = ', '.join(str(v) for v in values)
+        content = content.replace(match.group(0), f"{match.group(1)}{new_values}{match.group(3)}", 1)
+        print(f"✅ Updated Reddit Spend to $0")
     
     # Save
     with open(app_js, 'w') as f:
