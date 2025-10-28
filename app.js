@@ -45,46 +45,46 @@ const weeklyData = {
     categories: {
         'Spend': {
             icon: '💰',
-            total: [48106.80, 46074.52, 48916.39, 48835.36, 54755.04, 60351.30, 62535.95],
+            total: [48106.80, 46074.52, 48916.39, 48835.36, 54755.04, 60351.30, 62535.95, 65644.74],
             channels: {
-                'Google': [23452.15, 27690.84, 27478.99, 28920.18, 37260.32, 30480.45, 38050.58],
-                'Microsoft': [6118.66, 2888.48, 6142.92, 5660.00, 5798.12, 19317.47, 17109.03],
-                'Reddit': [3182.32, 3171.24, 3206.09, 4026.73, 5329.35, 5448.77, 3143.38],
-                'Linkedin': [7338.80, 4328.68, 4073.01, 5561.59, 6367.25, 5104.61, 4232.96],
-                'Stackadapt': [8014.87, 7995.28, 8015.38, 4666.86, 0.00, 0.00, 0.00]
+                'Google': [23452.15, 27690.84, 27478.99, 28920.18, 37260.32, 30480.45, 38050.58, 38050.58],
+                'Microsoft': [6118.66, 2888.48, 6142.92, 5660.00, 5798.12, 19317.47, 17109.03, 17109.03],
+                'Reddit': [3182.32, 3171.24, 3206.09, 4026.73, 5329.35, 5448.77, 3143.38, 3143.38],
+                'Linkedin': [7338.80, 4328.68, 4073.01, 5561.59, 6367.25, 5104.61, 4232.96, 4232.96],
+                'Stackadapt': [8014.87, 7995.28, 8015.38, 4666.86, 0.00, 0.00, 0.00, 0.00]
             }
         },
         'Impressions': {
             icon: '👁️',
-            total: [5303571, 5428627, 7093117, 7347913, 6425653, 5500001, 3090702],
+            total: [5303571, 5428627, 7093117, 7347913, 6425653, 5500001, 3090702, 3090702],
             channels: {
-                'Google': [246201, 237071, 163784, 194077, 1468017, 2085473, 1193280],
-                'Microsoft': [1696802, 1953569, 3435930, 3415494, 397520, 335178, 135383],
-                'Reddit': [1074105, 445308, 439252, 562743, 758431, 716611, 383818],
-                'Linkedin': [761867, 892620, 1243091, 2594511, 3801685, 2362739, 1378221],
-                'StackAdapt': [1524596, 1900059, 1811060, 581088, 0, 0, 0]
+                'Google': [246201, 237071, 163784, 194077, 1468017, 2085473, 1193280, 1193280],
+                'Microsoft': [1696802, 1953569, 3435930, 3415494, 397520, 335178, 135383, 135383],
+                'Reddit': [1074105, 445308, 439252, 562743, 758431, 716611, 383818, 383818],
+                'Linkedin': [761867, 892620, 1243091, 2594511, 3801685, 2362739, 1378221, 1378221],
+                'StackAdapt': [1524596, 1900059, 1811060, 581088, 0, 0, 0, 0]
             }
         },
         'Clicks': {
             icon: '🖱️',
-            total: [50513, 30110, 44229, 43537, 72165, 116157, 571320],
+            total: [50513, 30110, 44229, 43537, 72165, 116157, 571320, 571320],
             channels: {
-                'Google': [9656, 15751, 9656, 11871, 53635, 105074, 565557],
-                'Microsoft': [31431, 11095, 30738, 28038, 13219, 4989, 2454],
-                'Reddit': [2854, 1346, 1225, 1362, 2780, 3973, 1776],
-                'Linkedin': [5857, 1110, 1609, 1973, 2531, 2121, 1533],
-                'StackAdapt': [715, 808, 1001, 293, 0, 0, 0]
+                'Google': [9656, 15751, 9656, 11871, 53635, 105074, 565557, 565557],
+                'Microsoft': [31431, 11095, 30738, 28038, 13219, 4989, 2454, 2454],
+                'Reddit': [2854, 1346, 1225, 1362, 2780, 3973, 1776, 1776],
+                'Linkedin': [5857, 1110, 1609, 1973, 2531, 2121, 1533, 1533],
+                'StackAdapt': [715, 808, 1001, 293, 0, 0, 0, 0]
             }
         },
         'Conversions': {
             icon: '📈',
-            total: [4500, 5700, 2923, 4227, 11337.46, 18733.85, 3540],
+            total: [4500, 5700, 2923, 4227, 11337.46, 18733.85, 3540, 3540],
             channels: {
-                'Google': [2606, 4191, 1692, 2387, 8693, 16097, 1374],
-                'Microsoft': [0, 0, 0, 0, 0, 544, 292],
-                'Reddit': [291, 273, 219, 241, 442, 344, 1183],
-                'Linkedin': [1382, 963, 1001, 1586, 2202, 1749, 691],
-                'StackAdapt': [221, 273, 11, 13, 0, 0, 0]
+                'Google': [2606, 4191, 1692, 2387, 8693, 16097, 1374, 1374],
+                'Microsoft': [0, 0, 0, 0, 0, 544, 292, 292],
+                'Reddit': [291, 273, 219, 241, 442, 344, 1183, 1183],
+                'Linkedin': [1382, 963, 1001, 1586, 2202, 1749, 691, 691],
+                'StackAdapt': [221, 273, 11, 13, 0, 0, 0, 0]
             }
         },
         'AIQLs': {
@@ -99,10 +99,33 @@ const weeklyData = {
 };
 
 function loadDashboard() {
-    renderKPIs();
-    renderCharts();
-    renderAccordions();
-    renderAIQLBreakdown();
+    console.log('Loading dashboard...');
+    console.log('Week data:', weeklyData);
+    try {
+        renderKPIs();
+        console.log('KPIs rendered');
+    } catch (e) {
+        console.error('Error rendering KPIs:', e);
+    }
+    try {
+        renderCharts();
+        console.log('Charts rendered');
+    } catch (e) {
+        console.error('Error rendering charts:', e);
+    }
+    try {
+        renderAccordions();
+        console.log('Accordions rendered');
+    } catch (e) {
+        console.error('Error rendering accordions:', e);
+    }
+    try {
+        renderAIQLBreakdown();
+        console.log('AIQL breakdown rendered');
+    } catch (e) {
+        console.error('Error rendering AIQL breakdown:', e);
+    }
+    console.log('Dashboard loaded successfully');
 }
 
 function renderKPIs() {
@@ -145,6 +168,10 @@ function renderKPIs() {
 }
 
 function renderCharts() {
+    if (typeof Chart === 'undefined') {
+        console.warn('Chart.js not loaded - skipping chart renders');
+        return;
+    }
     renderSpendChart();
     renderChannelPieChart();
 }
@@ -289,7 +316,7 @@ function renderAccordions() {
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <span class="accordion-summary">${summary}</span>
                         ${costPerMetric ? `<span class="accordion-summary" style="color: var(--accent-amber);">${costPerMetric}</span>` : ''}
-                        ${hasChannels ? '<span class="accordion-icon">▼</span>' : ''}
+                        <span class="accordion-icon">▼</span>
                     </div>
                 </div>
                 ${hasChannels ? `
@@ -364,6 +391,7 @@ function getChannelColor(channel, alpha = 1) {
 }
 
 function formatNumber(num) {
+    if (num == null || !isFinite(num)) return '—';
     if (num >= 1000000) {
         return (num / 1000000).toFixed(2) + 'M';
     } else if (num >= 1000) {
@@ -378,6 +406,11 @@ function calculateDelta(current, previous) {
 }
 
 function renderAIQLBreakdown() {
+    if (typeof Chart === 'undefined') {
+        console.warn('Chart.js not loaded - skipping AIQL breakdown charts');
+        return;
+    }
+    
     // Email Type Chart
     const emailCtx = document.getElementById('emailTypeChart').getContext('2d');
     new Chart(emailCtx, {
