@@ -15,9 +15,9 @@ GOOGLE_DATA = {
     'conversions': 1733.2
 }
 
-# REAL data from APIs - these platforms had $0 spend this week (campaigns paused)
-MICROSOFT_DATA = {'spend': 0.00, 'impressions': 0, 'clicks': 0, 'conversions': 0}
-REDDIT_DATA = {'spend': 0.00, 'impressions': 0, 'clicks': 0, 'conversions': 0}
+# REAL data from APIs  
+MICROSOFT_DATA = {'spend': 0.00, 'impressions': 0, 'clicks': 0, 'conversions': 0}  # Campaigns paused
+REDDIT_DATA = {'spend': 3768.62, 'impressions': 727063, 'clicks': 2148, 'conversions': 7}  # Real API data
 LINKEDIN_DATA = {'spend': 4232.96, 'impressions': 1378221, 'clicks': 1533, 'conversions': 691}  # Previous week (no token available)
 
 # Calculate totals
@@ -42,7 +42,10 @@ def main():
     print(f"   Spend: ${MICROSOFT_DATA['spend']:,.2f} (campaigns paused this week)")
     
     print(f"\n✅ Reddit Ads (REAL DATA from API):")
-    print(f"   Spend: ${REDDIT_DATA['spend']:,.2f} (campaigns paused this week)")
+    print(f"   Spend: ${REDDIT_DATA['spend']:,.2f}")
+    print(f"   Impressions: {REDDIT_DATA['impressions']:,}")
+    print(f"   Clicks: {REDDIT_DATA['clicks']:,}")
+    print(f"   Conversions: {REDDIT_DATA['conversions']}")
     
     print(f"\n⚠️  LinkedIn Ads (using week 10/19 data - no active token):")
     
@@ -126,10 +129,52 @@ def main():
     if matches:
         match = matches[0]  # First match is in Spend section
         values = [float(v.strip()) for v in match.group(2).split(',')]
-        values[-1] = 0.00
+        values[-1] = round(REDDIT_DATA['spend'], 2)
         new_values = ', '.join(str(v) for v in values)
         content = content.replace(match.group(0), f"{match.group(1)}{new_values}{match.group(3)}", 1)
-        print(f"✅ Updated Reddit Spend to $0")
+        print(f"✅ Updated Reddit Spend")
+    
+    # Update Reddit impressions (need to find in Impressions section)
+    content_parts = content.split("'Impressions':")
+    if len(content_parts) > 1:
+        impr_section = content_parts[1]
+        reddit_impr_match = re.search(r"('Reddit': \[)([\d.,\s]+)(\])", impr_section)
+        if reddit_impr_match:
+            values = [int(v.strip()) for v in reddit_impr_match.group(2).split(',')]
+            values[-1] = REDDIT_DATA['impressions']
+            new_values = ', '.join(str(v) for v in values)
+            old_str = reddit_impr_match.group(0)
+            new_str = f"{reddit_impr_match.group(1)}{new_values}{reddit_impr_match.group(3)}"
+            content = content.replace(old_str, new_str, 1)
+            print(f"✅ Updated Reddit Impressions")
+    
+    # Update Reddit clicks
+    content_parts = content.split("'Clicks':")
+    if len(content_parts) > 1:
+        clicks_section = content_parts[1]
+        reddit_clicks_match = re.search(r"('Reddit': \[)([\d.,\s]+)(\])", clicks_section)
+        if reddit_clicks_match:
+            values = [int(v.strip()) for v in reddit_clicks_match.group(2).split(',')]
+            values[-1] = REDDIT_DATA['clicks']
+            new_values = ', '.join(str(v) for v in values)
+            old_str = reddit_clicks_match.group(0)
+            new_str = f"{reddit_clicks_match.group(1)}{new_values}{reddit_clicks_match.group(3)}"
+            content = content.replace(old_str, new_str, 1)
+            print(f"✅ Updated Reddit Clicks")
+    
+    # Update Reddit conversions
+    content_parts = content.split("'Conversions':")
+    if len(content_parts) > 1:
+        conv_section = content_parts[1]
+        reddit_conv_match = re.search(r"('Reddit': \[)([\d.,\s]+)(\])", conv_section)
+        if reddit_conv_match:
+            values = [float(v.strip()) for v in reddit_conv_match.group(2).split(',')]
+            values[-1] = REDDIT_DATA['conversions']
+            new_values = ', '.join(str(v) for v in values)
+            old_str = reddit_conv_match.group(0)
+            new_str = f"{reddit_conv_match.group(1)}{new_values}{reddit_conv_match.group(3)}"
+            content = content.replace(old_str, new_str, 1)
+            print(f"✅ Updated Reddit Conversions")
     
     # Save
     with open(app_js, 'w') as f:
