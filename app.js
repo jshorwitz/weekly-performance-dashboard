@@ -133,6 +133,13 @@ function renderKPIs() {
     const currentWeek = weeklyData.weeks.length - 1; // Latest week (now last in array)
     const prevWeek = currentWeek - 1;
     
+    console.log('KPI Debug:', {
+        currentWeek,
+        prevWeek,
+        currentSpend: weeklyData.categories['Spend'].total[currentWeek],
+        prevSpend: weeklyData.categories['Spend'].total[prevWeek]
+    });
+    
     const kpis = [
         {
             label: 'Total Spend',
@@ -155,6 +162,8 @@ function renderKPIs() {
             delta: calculateDelta(weeklyData.categories['Conversions'].total[currentWeek], weeklyData.categories['Conversions'].total[prevWeek])
         }
     ];
+    
+    console.log('KPIs with deltas:', kpis);
     
     kpiGrid.innerHTML = kpis.map(kpi => `
         <div class="kpi-card">
@@ -274,6 +283,9 @@ function renderChannelPieChart() {
                             return data.labels.map((label, i) => ({
                                 text: `${label}: $${formatNumber(data.datasets[0].data[i])}`,
                                 fillStyle: data.datasets[0].backgroundColor[i],
+                                strokeStyle: data.datasets[0].borderColor[i],
+                                fontColor: '#B8C0CC',
+                                color: '#B8C0CC',
                                 hidden: false,
                                 index: i
                             }));
