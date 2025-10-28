@@ -1,0 +1,174 @@
+{
+  "name": "Weekly Ad Platforms Data Sync",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1"
+            }
+          ]
+        }
+      },
+      "name": "Schedule: Every Monday 9 AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "week_start",
+              "value": "={{ $now.minus({days: 7}).toFormat('yyyy-MM-dd') }}"
+            },
+            {
+              "name": "week_end",
+              "value": "={{ $now.minus({days: 1}).toFormat('yyyy-MM-dd') }}"
+            },
+            {
+              "name": "week_label",
+              "value": "={{ $now.minus({days: 1}).toFormat('M/d') }}"
+            }
+          ]
+        }
+      },
+      "name": "Set Week Dates",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://googleads.googleapis.com/v21/customers/{{$env.GOOGLE_ADS_CUSTOMER_ID}}/googleAdsService:search",
+        "authentication": "oAuth2",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "developer-token",
+              "value": "={{$env.GOOGLE_ADS_DEVELOPER_TOKEN}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "SELECT metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions FROM campaign WHERE segments.date BETWEEN '{{$node[\"Set Week Dates\"].json[\"week_start\"]}}' AND '{{$node[\"Set Week Dates\"].json[\"week_end\"]}}' AND campaign.status != 'REMOVED'"
+            }
+          ]
+        }
+      },
+      "name": "Fetch Google Ads",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [650, 200]
+    },
+    {
+      "parameters": {
+        "url": "https://ads-api.reddit.com/api/v3/ad_accounts/t2_8ryecb8/reports",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "oAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Synter-n8n/1.0"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "data",
+              "value": "={{ {\"fields\": [\"IMPRESSIONS\", \"CLICKS\", \"SPEND\", \"CONVERSION_SIGN_UP_CLICKS\"], \"starts_at\": $node[\"Set Week Dates\"].json[\"week_start\"] + \"T00:00:00Z\", \"ends_at\": $node[\"Set Week Dates\"].json[\"week_end\"] + \"T00:00:00Z\"} }}"
+            }
+          ]
+        }
+      },
+      "name": "Fetch Reddit Ads",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO growth_data.ad_metrics (week_ending, platform, spend, impressions, clicks, conversions) VALUES\n('{{$node[\"Set Week Dates\"].json[\"week_end\"]}}', 'google', {{$node[\"Aggregate Google\"].json[\"spend\"]}}, {{$node[\"Aggregate Google\"].json[\"impressions\"]}}, {{$node[\"Aggregate Google\"].json[\"clicks\"]}}, {{$node[\"Aggregate Google\"].json[\"conversions\"]}}),\n('{{$node[\"Set Week Dates\"].json[\"week_end\"]}}', 'reddit', {{$node[\"Aggregate Reddit\"].json[\"spend\"]}}, {{$node[\"Aggregate Reddit\"].json[\"impressions\"]}}, {{$node[\"Aggregate Reddit\"].json[\"clicks\"]}}, {{$node[\"Aggregate Reddit\"].json[\"conversions\"]}})"
+      },
+      "name": "Store in BigQuery",
+      "type": "n8n-nodes-base.googleBigQuery",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "https://api.github.com/repos/jshorwitz/weekly-performance-dashboard/contents/app.js",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "data: auto-update week {{$node[\"Set Week Dates\"].json[\"week_label\"]}}"
+            },
+            {
+              "name": "content",
+              "value": "={{$base64.encode($node[\"Generate Updated app.js\"].json[\"content\"])}}"
+            },
+            {
+              "name": "sha",
+              "value": "={{$node[\"Get Current app.js\"].json[\"sha\"]}}"
+            }
+          ]
+        }
+      },
+      "name": "Update Dashboard via GitHub",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1250, 300]
+    }
+  ],
+  "connections": {
+    "Schedule: Every Monday 9 AM": {
+      "main": [
+        [
+          {
+            "node": "Set Week Dates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Week Dates": {
+      "main": [
+        [
+          {
+            "node": "Fetch Google Ads",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Reddit Ads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
