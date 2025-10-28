@@ -1,0 +1,734 @@
+{
+  "name": "Complete Growth Engine - Weekly Sync",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1"
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Every Monday 9 AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 460]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "week_start",
+              "name": "week_start",
+              "value": "={{ $now.minus({days: 7}).toFormat('yyyy-MM-dd') }}",
+              "type": "string"
+            },
+            {
+              "id": "week_end",
+              "name": "week_end",
+              "value": "={{ $now.minus({days: 1}).toFormat('yyyy-MM-dd') }}",
+              "type": "string"
+            },
+            {
+              "id": "week_label",
+              "name": "week_label",
+              "value": "={{ $now.minus({days: 1}).toFormat('M/d') }}",
+              "type": "string"
+            },
+            {
+              "id": "week_start_iso",
+              "name": "week_start_iso",
+              "value": "={{ $now.minus({days: 7}).toFormat('yyyy-MM-dd') + 'T00:00:00Z' }}",
+              "type": "string"
+            },
+            {
+              "id": "week_end_iso",
+              "name": "week_end_iso",
+              "value": "={{ $now.toFormat('yyyy-MM-dd') + 'T00:00:00Z' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-dates",
+      "name": "Calculate Week Dates",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [460, 460]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://googleads.googleapis.com/v21/customers/{{$env.GOOGLE_ADS_CUSTOMER_ID}}/googleAdsService:search",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleAdsOAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "developer-token",
+              "value": "={{$env.GOOGLE_ADS_DEVELOPER_TOKEN}}"
+            },
+            {
+              "name": "login-customer-id",
+              "value": "={{$env.GOOGLE_ADS_LOGIN_CUSTOMER_ID}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\"query\": \"SELECT metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions FROM campaign WHERE segments.date BETWEEN '\" + $('Calculate Week Dates').item.json.week_start + \"' AND '\" + $('Calculate Week Dates').item.json.week_end + \"' AND campaign.status != 'REMOVED'\"} }}",
+        "options": {}
+      },
+      "id": "google-ads-fetch",
+      "name": "Google Ads API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 240]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://ads-api.reddit.com/api/v3/ad_accounts/t2_8ryecb8/reports",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "redditOAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Synter-n8n/1.0"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\"data\": {\"fields\": [\"IMPRESSIONS\", \"CLICKS\", \"SPEND\", \"CONVERSION_SIGN_UP_CLICKS\"], \"starts_at\": $('Calculate Week Dates').item.json.week_start_iso, \"ends_at\": $('Calculate Week Dates').item.json.week_end_iso}} }}",
+        "options": {}
+      },
+      "id": "reddit-ads-fetch",
+      "name": "Reddit Ads API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 460]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.linkedin.com/v2/adAnalyticsV2",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "linkedInOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "analytics"
+            },
+            {
+              "name": "pivot",
+              "value": "ACCOUNT"
+            },
+            {
+              "name": "dateRange.start.day",
+              "value": "={{$('Calculate Week Dates').item.json.week_start.split('-')[2]}}"
+            },
+            {
+              "name": "dateRange.start.month",
+              "value": "={{$('Calculate Week Dates').item.json.week_start.split('-')[1]}}"
+            },
+            {
+              "name": "dateRange.start.year",
+              "value": "={{$('Calculate Week Dates').item.json.week_start.split('-')[0]}}"
+            },
+            {
+              "name": "dateRange.end.day",
+              "value": "={{$('Calculate Week Dates').item.json.week_end.split('-')[2]}}"
+            },
+            {
+              "name": "dateRange.end.month",
+              "value": "={{$('Calculate Week Dates').item.json.week_end.split('-')[1]}}"
+            },
+            {
+              "name": "dateRange.end.year",
+              "value": "={{$('Calculate Week Dates').item.json.week_end.split('-')[0]}}"
+            },
+            {
+              "name": "fields",
+              "value": "impressions,clicks,costInUsd,externalWebsiteConversions"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "linkedin-ads-fetch",
+      "name": "LinkedIn Ads API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 680]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Aggregate Google Ads metrics\nconst rows = $input.all();\n\nlet totalImpressions = 0;\nlet totalClicks = 0;\nlet totalSpend = 0;\nlet totalConversions = 0;\n\nfor (const item of rows) {\n  const results = item.json.results || [];\n  \n  for (const row of results) {\n    totalImpressions += row.campaign?.metrics?.impressions || 0;\n    totalClicks += row.campaign?.metrics?.clicks || 0;\n    totalSpend += (row.campaign?.metrics?.costMicros || 0) / 1000000;\n    totalConversions += row.campaign?.metrics?.conversions || 0;\n  }\n}\n\nreturn {\n  platform: 'google',\n  spend: Math.round(totalSpend * 100) / 100,\n  impressions: totalImpressions,\n  clicks: totalClicks,\n  conversions: Math.round(totalConversions * 10) / 10\n};"
+      },
+      "id": "aggregate-google",
+      "name": "Aggregate Google",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 240]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Aggregate Reddit Ads metrics\nconst item = $input.first();\nconst data = item.json.data || {};\nconst metrics = data.metrics?.[0] || {};\n\nconst totalSpend = (metrics.spend || 0) / 1000000; // Micro-dollars to dollars\nconst totalImpressions = metrics.impressions || 0;\nconst totalClicks = metrics.clicks || 0;\nconst totalConversions = metrics.conversion_sign_up_clicks || 0;\n\nreturn {\n  platform: 'reddit',\n  spend: Math.round(totalSpend * 100) / 100,\n  impressions: totalImpressions,\n  clicks: totalClicks,\n  conversions: totalConversions\n};"
+      },
+      "id": "aggregate-reddit",
+      "name": "Aggregate Reddit",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 460]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Aggregate LinkedIn Ads metrics\nconst item = $input.first();\nconst elements = item.json.elements || [];\n\nlet totalImpressions = 0;\nlet totalClicks = 0;\nlet totalSpend = 0;\nlet totalConversions = 0;\n\nfor (const element of elements) {\n  totalImpressions += element.impressions || 0;\n  totalClicks += element.clicks || 0;\n  totalSpend += element.costInUsd || 0;\n  totalConversions += element.externalWebsiteConversions || 0;\n}\n\nreturn {\n  platform: 'linkedin',\n  spend: Math.round(totalSpend * 100) / 100,\n  impressions: totalImpressions,\n  clicks: totalClicks,\n  conversions: totalConversions\n};"
+      },
+      "id": "aggregate-linkedin",
+      "name": "Aggregate LinkedIn",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 680]
+    },
+    {
+      "parameters": {},
+      "id": "merge-platforms",
+      "name": "Merge All Platforms",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [1120, 460]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Calculate totals and format for BigQuery\nconst items = $input.all();\n\nlet totals = {\n  spend: 0,\n  impressions: 0,\n  clicks: 0,\n  conversions: 0\n};\n\nconst platformData = [];\nconst weekEnd = $('Calculate Week Dates').item.json.week_end;\n\nfor (const item of items) {\n  const platform = item.json;\n  \n  totals.spend += platform.spend || 0;\n  totals.impressions += platform.impressions || 0;\n  totals.clicks += platform.clicks || 0;\n  totals.conversions += platform.conversions || 0;\n  \n  // Format for BigQuery insert\n  platformData.push({\n    week_ending: weekEnd,\n    platform: platform.platform,\n    spend: platform.spend,\n    impressions: platform.impressions,\n    clicks: platform.clicks,\n    conversions: platform.conversions,\n    inserted_at: new Date().toISOString()\n  });\n}\n\nreturn {\n  platforms: platformData,\n  totals: totals,\n  week_end: weekEnd,\n  week_label: $('Calculate Week Dates').item.json.week_label\n};"
+      },
+      "id": "calculate-totals",
+      "name": "Calculate Totals",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1320, 460]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "projectId": "={{$env.GCP_PROJECT_ID}}",
+        "datasetId": "growth_data",
+        "tableId": "ad_metrics",
+        "rows": "={{$json.platforms}}",
+        "options": {}
+      },
+      "id": "insert-bigquery",
+      "name": "Insert into BigQuery",
+      "type": "n8n-nodes-base.googleBigQuery",
+      "typeVersion": 1,
+      "position": [1540, 460]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.github.com/repos/jshorwitz/weekly-performance-dashboard/contents/app.js",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github.v3+json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "get-current-appjs",
+      "name": "Get Current app.js",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1760, 460]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Update app.js with new week's data\nconst currentFile = $('Get Current app.js').first().json;\nconst content = Buffer.from(currentFile.content, 'base64').toString('utf-8');\nconst sha = currentFile.sha;\n\nconst platforms = $('Calculate Totals').first().json.platforms;\nconst totals = $('Calculate Totals').first().json.totals;\nconst weekLabel = $('Calculate Totals').first().json.week_label;\n\n// Find platform data\nconst google = platforms.find(p => p.platform === 'google') || {};\nconst microsoft = platforms.find(p => p.platform === 'microsoft') || {};\nconst reddit = platforms.find(p => p.platform === 'reddit') || {};\nconst linkedin = platforms.find(p => p.platform === 'linkedin') || {};\n\n// Helper function to update array\nfunction updateArray(content, sectionName, channelName, newValue) {\n  const sectionRegex = new RegExp(`'${sectionName}':[\\\\s\\\\S]*?total: \\\\[([\\\\d.,\\\\s]+)\\\\]`);\n  const match = content.match(sectionRegex);\n  \n  if (match) {\n    const values = match[1].split(',').map(v => parseFloat(v.trim()));\n    values.push(newValue);\n    const newArray = values.join(', ');\n    content = content.replace(match[1], newArray);\n  }\n  \n  return content;\n}\n\n// Update totals\nlet updatedContent = content;\nupdatedContent = updateArray(updatedContent, 'Spend', 'total', totals.spend);\nupdatedContent = updateArray(updatedContent, 'Impressions', 'total', totals.impressions);\nupdatedContent = updateArray(updatedContent, 'Clicks', 'total', totals.clicks);\nupdatedContent = updateArray(updatedContent, 'Conversions', 'total', totals.conversions);\n\n// Update weeks array\nconst weeksMatch = updatedContent.match(/weeks: \\[([^\\]]+)\\]/);\nif (weeksMatch) {\n  const newWeeks = weeksMatch[1] + \", '\" + weekLabel + \"'\";\n  updatedContent = updatedContent.replace(weeksMatch[0], `weeks: [${newWeeks}]`);\n}\n\nreturn {\n  content: updatedContent,\n  sha: sha,\n  week_label: weekLabel\n};"
+      },
+      "id": "generate-updated-appjs",
+      "name": "Generate Updated app.js",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1980, 460]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "https://api.github.com/repos/jshorwitz/weekly-performance-dashboard/contents/app.js",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github.v3+json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\"message\": \"data: auto-update week \" + $json.week_label, \"content\": Buffer.from($json.content).toString('base64'), \"sha\": $json.sha} }}",
+        "options": {}
+      },
+      "id": "commit-to-github",
+      "name": "Commit to GitHub",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2200, 460]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.POSTHOG_BASE_URL}}/api/projects/{{$env.POSTHOG_PROJECT_ID}}/query",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.POSTHOG_API_KEY}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\"query\": {\"kind\": \"EventsQuery\", \"select\": [\"*\"], \"where\": [\"event = 'Sign Up' AND timestamp >= '\" + $('Calculate Week Dates').item.json.week_start + \"' AND timestamp <= '\" + $('Calculate Week Dates').item.json.week_end + \"'\"], \"limit\": 1000}} }}",
+        "options": {}
+      },
+      "id": "posthog-signups",
+      "name": "PostHog: Get Signups",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 900]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.clay.com/v1/enrichments",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.CLAY_API_KEY}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\"email\": $json.email, \"fields\": [\"company\", \"title\", \"linkedin_url\", \"company_size\", \"tech_stack\"]} }}",
+        "options": {}
+      },
+      "id": "clay-enrich",
+      "name": "Clay: Enrich Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 900]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://app.loops.so/api/v1/contacts/create",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.LOOPS_API_KEY}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\"email\": $json.email, \"firstName\": $json.firstName, \"source\": $json.source, \"customFields\": {\"company\": $json.company, \"icpScore\": $json.icp_score}} }}",
+        "options": {}
+      },
+      "id": "loops-add-contact",
+      "name": "Loops: Add to Nurture",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 800]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.lagrowthmachine.com/v1/campaigns/{{$env.LGM_CAMPAIGN_ID}}/leads",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-KEY",
+              "value": "={{$env.LGM_API_KEY}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\"email\": $json.email, \"linkedinUrl\": $json.linkedin_url, \"firstName\": $json.firstName, \"lastName\": $json.lastName, \"companyName\": $json.company} }}",
+        "options": {}
+      },
+      "id": "lgm-add-lead",
+      "name": "LGM: Add to Outreach",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 1000]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "icp-qualified",
+              "leftValue": "={{$json.icp_score}}",
+              "rightValue": 70,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "filter-icp",
+      "name": "Filter: ICP Score >= 70",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 900]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.SLACK_WEBHOOK_URL}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\"text\": \"📊 *Weekly Growth Engine Update*\\n\\n*Week Ending:* \" + $('Calculate Totals').item.json.week_label + \"\\n\\n*Ad Platform Totals:*\\n• Spend: $\" + $('Calculate Totals').item.json.totals.spend.toLocaleString() + \"\\n• Impressions: \" + $('Calculate Totals').item.json.totals.impressions.toLocaleString() + \"\\n• Clicks: \" + $('Calculate Totals').item.json.totals.clicks.toLocaleString() + \"\\n• Conversions: \" + $('Calculate Totals').item.json.totals.conversions + \"\\n\\n✅ Dashboard updated: https://your-dashboard.vercel.app\"} }}",
+        "options": {}
+      },
+      "id": "slack-notification",
+      "name": "Send Slack Summary",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2420, 460]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "projectId": "={{$env.GCP_PROJECT_ID}}",
+        "query": "SELECT week_ending, platform, SUM(spend) as spend, SUM(impressions) as impressions, SUM(clicks) as clicks, SUM(conversions) as conversions FROM growth_data.ad_metrics WHERE week_ending >= DATE_SUB(CURRENT_DATE(), INTERVAL 8 WEEK) GROUP BY week_ending, platform ORDER BY week_ending, platform",
+        "options": {}
+      },
+      "id": "query-historical",
+      "name": "Query 8-Week History",
+      "type": "n8n-nodes-base.googleBigQuery",
+      "typeVersion": 1,
+      "position": [1540, 680]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.hubspot.com/crm/v3/objects/contacts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "oAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "100"
+            },
+            {
+              "name": "properties",
+              "value": "email,firstname,lastname,company,createdate,hs_lead_status"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "hubspot-contacts",
+      "name": "HubSpot: Recent Contacts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 1100]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Every Monday 9 AM": {
+      "main": [
+        [
+          {
+            "node": "Calculate Week Dates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Week Dates": {
+      "main": [
+        [
+          {
+            "node": "Google Ads API",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Reddit Ads API",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "LinkedIn Ads API",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "PostHog: Get Signups",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HubSpot: Recent Contacts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Ads API": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Google",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reddit Ads API": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Reddit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LinkedIn Ads API": {
+      "main": [
+        [
+          {
+            "node": "Aggregate LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Google": {
+      "main": [
+        [
+          {
+            "node": "Merge All Platforms",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Reddit": {
+      "main": [
+        [
+          {
+            "node": "Merge All Platforms",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Aggregate LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "Merge All Platforms",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge All Platforms": {
+      "main": [
+        [
+          {
+            "node": "Calculate Totals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Totals": {
+      "main": [
+        [
+          {
+            "node": "Insert into BigQuery",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert into BigQuery": {
+      "main": [
+        [
+          {
+            "node": "Get Current app.js",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Query 8-Week History",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Current app.js": {
+      "main": [
+        [
+          {
+            "node": "Generate Updated app.js",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Updated app.js": {
+      "main": [
+        [
+          {
+            "node": "Commit to GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Commit to GitHub": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PostHog: Get Signups": {
+      "main": [
+        [
+          {
+            "node": "Clay: Enrich Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clay: Enrich Lead": {
+      "main": [
+        [
+          {
+            "node": "Filter: ICP Score >= 70",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter: ICP Score >= 70": {
+      "main": [
+        [
+          {
+            "node": "Loops: Add to Nurture",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "LGM: Add to Outreach",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HubSpot: Recent Contacts": {
+      "main": [
+        [
+          {
+            "node": "Clay: Enrich Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "versionId": "1",
+  "meta": {
+    "instanceId": "n8n-growth-engine"
+  },
+  "tags": []
+}
